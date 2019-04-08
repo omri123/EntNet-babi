@@ -1,6 +1,6 @@
 require('paths')
 require('nngraph')
-require('cunn')
+-- require('cunn')
 require('optim')
 paths.dofile('params.lua')
 paths.dofile('utils.lua')

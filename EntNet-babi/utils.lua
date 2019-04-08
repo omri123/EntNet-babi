@@ -28,8 +28,9 @@ end
 -- set random seed
 function g_make_deterministic(seed)
     torch.manualSeed(seed)
-    cutorch.manualSeed(seed)
-    torch.zeros(1, 1):cuda():uniform()
+    -- cutorch.manualSeed(seed)
+    -- torch.zeros(1, 1):cuda():uniform()
+    torch.zeros(1, 1):uniform()
 end
 
 -- format strings

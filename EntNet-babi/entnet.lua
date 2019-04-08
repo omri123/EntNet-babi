@@ -1,6 +1,7 @@
 --------------------------
 -- create the EntNet
 --------------------------
+torch.setdefaulttensortype('torch.FloatTensor')
 
 local vocabsize = opt.nwords
 if opt.tied == 0 then
@@ -103,14 +104,14 @@ end
 function build_model(opt)
    local model = {}
    model.network = build_network(opt)
-   model.network = model.network:cuda()
+   -- model.network = model.network:cuda()
 
    if opt.tied == 0 then
       model.keys = torch.range(opt.nwords + 1, opt.nwords + opt.memslots)
    else
       model.keys = trdata.entities
    end
-   model.keys = model.keys:cuda()
+   -- model.keys = model.keys:cuda()
 
    -- share the clones across timesteps
    share_modules({get_module(model.network, 'prelu')})
@@ -124,7 +125,7 @@ function build_model(opt)
    share_modules({get_module(model.network, 'H')})
 
    model.paramx, model.paramdx = model.network:getParameters()
-   model.loss = nn.ClassNLLCriterion():cuda()
+   model.loss = nn.ClassNLLCriterion()-- :cuda()
    model.loss.sizeAverage = false
 
    function model:reset()
@@ -162,11 +163,12 @@ function build_model(opt)
    end
 
    function model:fprop(question, answer, story)
-      self.mask = story:ne(1):sum(3):select(3,1):ne(0):cuda()
-      self.logprob = self.network:forward({question, story, self.keys, self.mask})
+      self.mask = story:ne(1):sum(3):select(3,1):ne(0)
+      local mask_as_float = self.mask:float()
+      self.logprob = self.network:forward({question, story, self.keys, mask_as_float})
       local cost = self.loss:forward(self.logprob, answer)
       local _, pred = self.logprob:max(2)
-      pred = pred:cuda()
+      pred = pred:float()
       local missed = pred:ne(answer)
       return missed:sum(), cost, missed, pred
    end

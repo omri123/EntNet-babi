@@ -164,9 +164,9 @@ function datasource:load(data_path, batch_size, memory_size, dict, idict, senten
     end
     self.entities = torch.Tensor(entities_indx)
 
-    self.memory = self.memory:cuda()
-    self.input = self.input:cuda()
-    self.target = self.target:cuda()
+    -- self.memory = self.memory:cuda()
+    -- self.input = self.input:cuda()
+    -- self.target = self.target:cuda()
 end
 
 function datasource:getBatch(batch)

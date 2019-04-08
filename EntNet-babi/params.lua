@@ -28,7 +28,7 @@ cmd:option('-runs', 10)
 cmd:option('-save', 'outputs/')
 
 opt = cmd:parse(arg or {})
-cutorch.setDevice(opt.gpu)
+-- cutorch.setDevice(opt.gpu)
 opt.use_time = (opt.use_time == 1)
 print(opt)
 
